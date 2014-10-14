@@ -1,0 +1,399 @@
+\documentclass[12pt]{article}
+\usepackage[top=1in, bottom= 1in, left= 1in, right= 1in]{geometry}
+\usepackage[USenglish]{babel} % set the language; greek allows \textgreek{\euro}
+\usepackage{multirow} % For tables
+\usepackage{graphicx, subfigure} % For graphics
+\usepackage{fancyhdr} % Produces fancy headers
+\usepackage{setspace} % allows for vsape
+\usepackage{natbib} % package to organize literature --> google it!
+\usepackage{verbatim} % For including R-code
+\usepackage{booktabs} % nicer tables
+\usepackage{alltt} % verbatim + highlighting
+\usepackage{amsmath} %boldsymbols
+\usepackage{lscape} %Querformat
+\usepackage{dcolumn} % align at decimal mark
+\usepackage{floatrow} % description paragraphs below figures and tables
+\usepackage{enumerate} % alter enumerate items (i,ii,iii etc)
+\usepackage[colorlinks=true,citecolor=blue,urlcolor=blue]{hyperref}
+\setlength{\headheight}{15pt}
+% http://en.wikibooks.org/wiki/LaTeX/Page_Layout for additional info
+
+\begin{document}
+\begin{center}
+  {\Large \textbf{Simulating Efficiency of Voting Rules Depending on Assumptions about Individual Utilities}}
+\end{center}
+
+\begin{itemize}
+\item For each scenario, I simulated 2000 voters in 500 elections. Each scenario differs with regard to the underlying (distributional) assumptions of individual utilities and candidate positions.
+\end{itemize}
+
+<<echo=FALSE>>=
+### load required packages
+suppressPackageStartupMessages(library(MASS))
+suppressPackageStartupMessages(library(smacof))
+
+### set simulation parameters
+n.vote <- 2000
+n.sim <- 500
+set.seed(123)
+
+### define fuction to present results
+res <- function(a,b,bw="nrd0",ylim=NULL,xlim=NULL){
+  if(length(unique(dim(a)!=dim(b)))>1)
+    {stop("Utility matrices do not have same dimensions!")
+     } else if(unique(dim(a)!=dim(b)))
+       {stop("Utility matrices do not have same dimensions!")}
+          
+  # estimate correlation between utilities
+  corrs <- NULL
+  for(i in 1:ncol(a)){
+    corrs <- c(corrs,cor(a[,i],b[,i]))
+  }
+  par(mfrow=c(3,1))
+  hist(corrs, main="Histogram of Correlations between Utilities for each Simulation",xlim=c(-1,1),col="lightgrey",xlab="Correlation Coefficients")
+
+  # calculate individual utility differential
+  dif <- a-b
+  plot(density(dif[,1]),main="Distribution of Individual Utility Differentials for 10 Simulations",col=1,ylim=ylim,xlim=xlim,lwd=2)
+  for(i in 2:10){
+    lines(density(dif[,i],bw=bw),col=i,lwd=2,lty=i)
+  }
+
+  # predict vote choice for a
+  vote.i <- 1*(dif>0)
+  vote <- apply(vote.i,2,mean)
+
+  # aggregate individual utilities
+  util.a <- apply(a,2,sum)
+  util.b <- apply(b,2,sum)
+  util <- util.a - util.b
+  
+  # percentage of efficient majorities
+  eff <- mean(as.numeric((vote>.5)==(util>0)))
+  eff.plot <- barplot(c(1-eff,eff), main="Percentage of Efficient Majorities", col="lightgrey",
+                      names.arg=c("Not Efficient","Efficient"), ylim=c(0,1))
+  text(eff.plot, c(1-eff+.1,eff-.1), labels=round(c(1-eff,eff),digits=4), col="black",cex=1.5)
+}
+
+smacofRes <- function(utils,n=n.vote){
+  sres <- smacofRect(utils[1:n,],ndim=1)
+  par(mfrow=c(3,1))
+  hist(sres$conf.row,main="Histogram of Estimated Ideal Points Based on Simulated Utilities",col="lightgrey",xlab="Latent Dimension")
+  abline(v=sres$conf.col, col="red")
+  legend("topright","Candidate Ideal Points",col="red",lty=1)
+  utils.abs <- -1*abs(sres$conf.row %*% c(1,1) - rep(1,n.vote) %*% t(sres$conf.col))
+  utils.sq <- -1*(sres$conf.row %*% c(1,1) - rep(1,n.vote) %*% t(sres$conf.col))^2
+  plot(utils[1:n,],utils.abs,main="Actual Utilities and Utilities based on Estimated Ideal Points (absolute distance)"
+       ,col=rgb(0,100,0,50,maxColorValue=255), pch=16,xlab="Actual Simulated Utilities",ylab="Estimated Utilites")
+  plot(utils[1:n,],utils.sq,main="Actual Utilities and Utilities based on Estimated Ideal Points (squared distance)"
+       ,col=rgb(0,100,0,50,maxColorValue=255), pch=16,xlab="Actual Simulated Utilities",ylab="Estimated Utilites")
+}
+
+#purl("vote_sim.Rnw","vote_sim.R")
+@
+
+\subsection*{First Set of Simulations}
+\subsubsection*{Scenario 1a: Independent Uniform Utilities for two Alternatives}
+
+\begin{align*}
+U_a,U_b \sim \mathcal{U}(0,1)
+\end{align*}
+
+<<echo=FALSE,fig.height=6,fig.width=6>>=
+# simulate utilities for both alternatives
+a <- matrix(runif(n.vote*n.sim),nrow=n.vote)
+b <- matrix(runif(n.vote*n.sim),nrow=n.vote)
+
+res(a,b,ylim=c(0,1))
+@
+
+\clearpage
+\subsubsection*{Scenario 1b: Independent Normal Utilities for two Alternatives}
+
+\begin{align*}
+U_a,U_b \sim \mathcal{N}(\mu=0,\sigma^2=1)
+\end{align*}
+
+<<echo=FALSE,fig.height=6,fig.width=6>>=
+# simulate utilities for both alternatives
+a <- matrix(rnorm(n.vote*n.sim),nrow=n.vote)
+b <- matrix(rnorm(n.vote*n.sim),nrow=n.vote)
+
+res(a,b,ylim=c(0,.3))
+@
+
+\clearpage
+\subsubsection*{Scenario 2a: Utilities Determined by Uniform Ideal Points: Absolute Distance}
+
+\begin{align*}
+X_a,X_b,X_{cand1},X_{cand2} &\sim \mathcal{U}(0,1) \\
+U_{a1,a2,b1,b2} &= -|X_{cand1,cand2}-X_{a,b}|
+\end{align*}
+
+<<echo=FALSE,fig.height=6,fig.width=6>>=
+# simulate utilities for both alternatives
+ideal <- matrix(runif(n.vote*n.sim),nrow=n.vote)
+pos.a <- matrix(rep(runif(n.sim),n.vote),nrow=n.vote,byrow=T)
+pos.b <- matrix(rep(runif(n.sim),n.vote),nrow=n.vote,byrow=T)
+a <- -1*abs(ideal - pos.a)
+b <- -1*abs(ideal - pos.b)
+
+res(a,b,xlim=c(-.8,.8),ylim=c(0,20))
+@
+
+This is interesting: the bimodal differential is due to the fact that with absolute distances, the differential is equal for all individuals which are to the left or to the right of both available candidates. Accordingly, they all have the same utility differential, independent of their distance to either candidate.
+
+\clearpage
+\subsubsection*{Scenario 2b: Utilities Determined by Uniform Ideal Points: Squared Distance}
+
+\begin{align*}
+X_a,X_b,X_{cand1},X_{cand2} &\sim \mathcal{U}(0,1) \\
+U_{a1,a2,b1,b2} &= -(X_{cand1,cand2}-X_{a,b})^2
+\end{align*}
+
+<<echo=FALSE,fig.height=6,fig.width=6>>=
+# simulate utilities for both alternatives
+a <- -1*(ideal - pos.a)^2
+b <- -1*(ideal - pos.b)^2
+
+res(a,b,ylim=c(0,4),xlim=c(-.7,.7))
+@
+
+This is not the case if we look at squared distances rather than absolute distances (which is ususally the norm in most political science conceptualizations).
+
+\clearpage
+\subsubsection*{Scenario 3a: Utilities Determined by Normal Ideal Points: Absolute Distance}
+\begin{align*}
+X_a,X_b,X_{cand1},X_{cand2} &\sim \mathcal{N}(\mu=0,\sigma^2=1) \\
+U_{a1,a2,b1,b2} &= -|X_{cand1,cand2}-X_{a,b}|
+\end{align*}
+
+<<echo=FALSE,fig.height=6,fig.width=6>>=
+# simulate utilities for both alternatives
+ideal <- matrix(rnorm(n.vote*n.sim),nrow=n.vote)
+pos.a <- matrix(rep(rnorm(n.sim),n.vote),nrow=n.vote,byrow=T)
+pos.b <- matrix(rep(rnorm(n.sim),n.vote),nrow=n.vote,byrow=T)
+a <- -1*abs(ideal - pos.a)
+b <- -1*abs(ideal - pos.b)
+
+res(a,b,bw=0.1,xlim=c(-2.5,2.5),ylim=c(0,4))
+@
+
+\clearpage
+\subsubsection*{Scenario 3b: Utilities Determined by Normal Ideal Points: Squared Distance}
+\begin{align*}
+X_a,X_b,X_{cand1},X_{cand2} &\sim \mathcal{N}(\mu=0,\sigma^2=1) \\
+U_{a1,a2,b1,b2} &= -(X_{cand1,cand2}-X_{a,b})^2
+\end{align*}
+
+<<echo=FALSE,fig.height=6,fig.width=6>>=
+# simulate utilities for both alternatives
+a <- -1*(ideal - pos.a)^2
+b <- -1*(ideal - pos.b)^2
+
+res(a,b,ylim=c(0,.6),xlim=c(-10,10))
+@
+
+\clearpage
+\subsubsection*{Scenario 4a: Positively Correlated Normal Utilities for two Alternatives}
+\begin{align*}
+U_a,U_b \sim \mathcal{N}\left(
+\boldsymbol{\mu}=\begin{pmatrix}0 \\ 0\end{pmatrix},
+\mathbf{\Sigma}=\begin{pmatrix}1 & 0.5 \\ 0.5 & 1\end{pmatrix}\right)
+\end{align*}
+
+<<echo=FALSE,fig.height=6,fig.width=6>>=
+# simulate utilities for both alternatives
+utils <- mvrnorm(n.vote*n.sim,mu=c(0,0),Sigma=matrix(c(1,.5,.5,1),nrow=2))
+a <- matrix(utils[,1],nrow=n.vote)
+b <- matrix(utils[,2],nrow=n.vote)
+
+res(a,b,ylim=c(0,.45))
+smacofRes(utils)
+@
+
+\clearpage
+\subsubsection*{Scenario 4b: Negatively Correlated Normal Utilities for two Alternatives}
+\begin{align*}
+U_a,U_b \sim \mathcal{N}\left(
+\boldsymbol{\mu}=\begin{pmatrix}0 \\ 0\end{pmatrix},
+\mathbf{\Sigma}=\begin{pmatrix}1 & -0.9 \\ -0.9 & 1\end{pmatrix}\right)
+\end{align*}
+
+<<echo=FALSE,fig.height=6,fig.width=6>>=
+# simulate utilities for both alternatives
+utils <- mvrnorm(n.vote*n.sim,mu=c(0,0),Sigma=matrix(c(1,-.9,-.9,1),nrow=2))
+a <- matrix(utils[,1],nrow=n.vote)
+b <- matrix(utils[,2],nrow=n.vote)
+
+res(a,b,ylim=c(0,.25))
+smacofRes(utils)
+@
+
+\clearpage
+\subsection*{Second Set of Simulational Scenarios}
+\subsubsection*{Scenario 5: Negatively or Positively Correlated Normal Utilities for two Alternatives}
+In this scenario, I simulate two types of voters: one where the utilities are strongly negatively correlated and one type where they are moderately positively correlated. Each individual $i$ has a probability of $p=.5$ to be drawn from the following distribution:
+\begin{align*}
+U_a,U_b \sim \mathcal{N}\left(
+\boldsymbol{\mu}=\begin{pmatrix}0 \\ 0\end{pmatrix},
+\mathbf{\Sigma}=\begin{pmatrix}1 & -0.99 \\ -0.99 & 1\end{pmatrix}\right)
+\end{align*}
+as well as a probability of $1-p=.5$, to be drawn from the alternative distribution:
+\begin{align*}
+U_a,U_b \sim \mathcal{N}\left(
+\boldsymbol{\mu}=\begin{pmatrix}0 \\ 0\end{pmatrix},
+\mathbf{\Sigma}=\begin{pmatrix}1 & .5 \\ .5 & 1\end{pmatrix}\right)
+\end{align*}
+
+<<echo=FALSE,fig.height=6,fig.width=6>>=
+# simulate utilities for both alternatives
+p <- .5
+utils <- rbind(mvrnorm(n.vote*n.sim*p,mu=c(0,0),Sigma=matrix(c(1,-.99,-.99,1),nrow=2))
+               , mvrnorm(n.vote*n.sim*(1-p),mu=c(0,0),Sigma=matrix(c(1,.5,.5,1),nrow=2)))
+utils <- utils[sample(1:(n.vote*n.sim),size=n.vote*n.sim),]
+a <- matrix(utils[,1],nrow=n.vote)
+b <- matrix(utils[,2],nrow=n.vote)
+
+res(a,b)
+smacofRes(utils)
+@
+
+\clearpage
+\subsubsection*{Scenario 6a: Normal Ideal Points/Squared Distance: Large Distance b/w Candidates}
+\begin{align*}
+X_a,X_b &\sim \mathcal{N}(\mu=0,\sigma^2=1) \\
+X_{cand1} &\sim \mathcal{N}(\mu=1,\sigma^2=0.1) \\
+X_{cand2} &\sim \mathcal{N}(\mu=-1,\sigma^2=0.1) \\
+U_{a1,a2,b1,b2} &= -(X_{cand1,cand2}-X_{a,b})^2
+\end{align*}
+
+<<echo=FALSE,fig.height=6,fig.width=6>>=
+# simulate utilities for both alternatives
+ideal <- matrix(rnorm(n.vote*n.sim),nrow=n.vote)
+pos.a <- matrix(rep(rnorm(n.sim,mean=1,sd=.1),n.vote),nrow=n.vote,byrow=T)
+pos.b <- matrix(rep(rnorm(n.sim,mean=-1,sd=.1),n.vote),nrow=n.vote,byrow=T)
+a <- -1*(ideal - pos.a)^2
+b <- -1*(ideal - pos.b)^2
+
+res(a,b,ylim=c(0,0.15),xlim=c(-10,10))
+@
+
+\clearpage
+\subsubsection*{Scenario 6b: Normal Ideal Points/Squared Distance: Small Distance b/w Candidates}
+\begin{align*}
+X_a,X_b &\sim \mathcal{N}(\mu=0,\sigma^2=1) \\
+X_{cand1},X_{cand2} &\sim \mathcal{N}(\mu=0,\sigma^2=0.1) \\
+U_{a1,a2,b1,b2} &= -(X_{cand1,cand2}-X_{a,b})^2
+\end{align*}
+
+<<echo=FALSE,fig.height=6,fig.width=6>>=
+# simulate utilities for both alternatives
+ideal <- matrix(rnorm(n.vote*n.sim),nrow=n.vote)
+pos.a <- matrix(rep(rnorm(n.sim,mean=0,sd=.1),n.vote),nrow=n.vote,byrow=T)
+pos.b <- matrix(rep(rnorm(n.sim,mean=0,sd=.1),n.vote),nrow=n.vote,byrow=T)
+a <- -1*(ideal - pos.a)^2
+b <- -1*(ideal - pos.b)^2
+
+res(a,b,ylim=c(0,6),xlim=c(-5,5))
+@
+
+\clearpage
+\subsubsection*{Scenario 7a: Utilities Determined by Skewed Ideal Points: Squared Distance}
+\begin{align*}
+X_a,X_b &\sim exp(\mathcal{N}(\mu=0,\sigma^2=10)) \\
+X_{cand1},X_{cand2} &\sim \mathcal{N}(\mu=0,\sigma^2=0.1), \\
+U_{a1,a2,b1,b2} &= -(X_{cand1,cand2}-X_{a,b})^2
+\end{align*}
+
+<<echo=FALSE,fig.height=6,fig.width=6>>=
+# simulate utilities for both alternatives
+ideal <- matrix(exp(rnorm(n.vote*n.sim,0,10)),nrow=n.vote)
+pos.a <- matrix(rep(rnorm(n.sim,mean=0,sd=.1),n.vote),nrow=n.vote,byrow=T)
+pos.b <- matrix(rep(rnorm(n.sim,mean=0,sd=.1),n.vote),nrow=n.vote,byrow=T)
+a <- -1*(ideal - pos.a)^2
+b <- -1*(ideal - pos.b)^2
+
+res(a,b)
+@
+
+\clearpage
+\subsubsection*{Scenario 7b: Utilities Determined by Skewed Ideal Points: Squared Distance}
+\begin{align*}
+X_a,X_b &\sim exp(\mathcal{N}(\mu=0,\sigma^2=10)) \\
+X_{cand1},X_{cand2} &\sim \mathcal{U}(0,0.1), \\
+U_{a1,a2,b1,b2} &= -(X_{cand1,cand2}-X_{a,b})^2
+\end{align*}
+
+<<echo=FALSE,fig.height=6,fig.width=6>>=
+# simulate utilities for both alternatives
+ideal <- matrix(exp(rnorm(n.vote*n.sim,0,10)),nrow=n.vote)
+pos.a <- matrix(rep(runif(n.sim,0,.1),n.vote),nrow=n.vote,byrow=T)
+pos.b <- matrix(rep(runif(n.sim,0,.1),n.vote),nrow=n.vote,byrow=T)
+a <- -1*(ideal - pos.a)^2
+b <- -1*(ideal - pos.b)^2
+
+res(a,b)
+@
+
+\clearpage
+\subsubsection*{Scenario 8a: Different Independent Normal Utilities for two Alternatives: Large Distance}
+
+\begin{align*}
+U_a \sim \mathcal{N}(\mu=1,\sigma^2=0.1)\\
+U_b \sim \mathcal{N}(\mu=-1,\sigma^2=0.1)
+\end{align*}
+
+<<echo=FALSE,fig.height=6,fig.width=6>>=
+# simulate utilities for both alternatives
+a <- matrix(rnorm(n.vote*n.sim,1,.1),nrow=n.vote)
+b <- matrix(rnorm(n.vote*n.sim,-1,.1),nrow=n.vote)
+
+res(a,b)
+smacofRes(cbind(a[,1],b[,1]))
+@
+
+\clearpage
+\subsubsection*{Scenario 8b: Different Independent Normal Utilities for two Alternatives: Small Distance}
+
+\begin{align*}
+U_a \sim \mathcal{N}(\mu=0,\sigma^2=0.1)\\
+U_b \sim \mathcal{N}(\mu=0,\sigma^2=0.1)
+\end{align*}
+
+<<echo=FALSE,fig.height=6,fig.width=6>>=
+# simulate utilities for both alternatives
+a <- matrix(rnorm(n.vote*n.sim,0,.1),nrow=n.vote)
+b <- matrix(rnorm(n.vote*n.sim,0,.1),nrow=n.vote)
+
+res(a,b)
+smacofRes(cbind(a[,1],b[,1]))
+@
+
+\clearpage
+\subsubsection*{Scenario 8c: Different Independent Normal Utilities for two Alternatives: Heterogenous Population}
+In this scenario, I simulate two types of voters: one where the utilities are very close and one type where they are further apart. Each individual $i$'s utilities have a probability of $p=.5$ to be drawn from the following distribution:
+\begin{align*}
+U_a \sim \mathcal{N}(\mu=0,\sigma^2=0.1)\\
+U_b \sim \mathcal{N}(\mu=0,\sigma^2=0.1)
+\end{align*}
+as well as a probability of $1-p=.5$, to be drawn from the alternative distribution:
+\begin{align*}
+U_a \sim \mathcal{N}(\mu=1,\sigma^2=0.1)\\
+U_b \sim \mathcal{N}(\mu=-1,\sigma^2=0.1)
+\end{align*}
+
+<<echo=FALSE,fig.height=6,fig.width=6>>=
+# simulate utilities for both alternatives
+p=.5
+tmp <- sample(1:(n.vote*n.sim),size=n.vote*n.sim)
+a <- matrix(sample(c(rnorm(n.vote*n.sim*p,0,.1), rnorm(n.vote*n.sim*(1-p),1,.1))[tmp]),nrow=n.vote)
+b <- matrix(sample(c(rnorm(n.vote*n.sim*p,0,.1), rnorm(n.vote*n.sim*(1-p),1,.1))[tmp]),nrow=n.vote)
+
+res(a,b)
+smacofRes(cbind(a[,1],b[,1]))
+@
+
+%\bibliographystyle{apsr}
+%\bibliography{Literature}
+\end{document}
