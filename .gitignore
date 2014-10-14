@@ -12,3 +12,6 @@ memo
 *.tar.gz
 *.fdb_latexmk
 *.synctex.gz
+*.nav
+*.snm
+*.toc
