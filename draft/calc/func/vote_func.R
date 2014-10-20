@@ -41,7 +41,7 @@ vote_plot <- function(a,b,bw="nrd0",ylim=NULL,xlim=NULL){
      } else if(unique(dim(a)!=dim(b)))
        {stop("Utility matrices do not have same dimensions!")}
 
-  par(mfrow=c(3,1))
+  par(mfrow=c(1,3))
 
   # calculate individual utility differential
   dif <- a-b
@@ -50,14 +50,16 @@ vote_plot <- function(a,b,bw="nrd0",ylim=NULL,xlim=NULL){
   eff <- vote_eff(dif)
   eff.plot <- barplot(c(1-eff,eff)
     , main="Percentage of Efficient Majorities"
-    , col="lightgrey", names.arg=c("Not Efficient","Efficient"), ylim=c(0,1))
+    , col="lightgrey", names.arg=c("Not Efficient","Efficient")
+    , ylim=c(0,1), cex.names=1.5)
   text(eff.plot, c(1-eff+.1,eff-.1), labels=round(c(1-eff,eff),digits=4)
     , col="black",cex=1.5)
 
   # plot distribution of utility differentials
   plot(density(dif[,1])
-    ,main="Distribution of Individual Utility Differentials for 3 Simulations"
-    ,col=1,ylim=ylim,xlim=xlim,lwd=2)
+    ,main="Utility Differentials\n(3 Simulations)"
+    ,col=1,ylim=ylim,xlim=xlim,lwd=2,xlab="Utility A - Utility B"
+    , cex.lab=1.5)
   for(i in 2:3){
     lines(density(dif[,i],bw=bw),lwd=2,lty=i)
   }
@@ -68,6 +70,6 @@ vote_plot <- function(a,b,bw="nrd0",ylim=NULL,xlim=NULL){
     corrs <- c(corrs,cor(a[,i],b[,i]))
   }
   hist(corrs
-    , main="Histogram of Correlations between Utilities for each Simulation"
-  	,xlim=c(-1,1),col="lightgrey",xlab="Correlation Coefficients")
+    , main="Correlations b/w Utility A and Utility B\n(for each Simulation)"
+  	,xlim=c(-1,1),col="lightgrey",xlab="Correlation", cex.lab=1.5)
 }

@@ -40,7 +40,7 @@ pos_a <- matrix(rep(rnorm(n_sim),n_vote),nrow=n_vote,byrow=T)
 pos_b <- matrix(rep(rnorm(n_sim),n_vote),nrow=n_vote,byrow=T)
 a <- -1*(ideal - pos_a)^2
 b <- -1*(ideal - pos_b)^2
-pdf("fig/s1a.pdf")
+pdf("fig/s1a.pdf",width=9,height=3)
 vote_plot(a,b,ylim=c(0,0.8),xlim=c(-5,5))
 dev.off()
 
@@ -48,7 +48,7 @@ dev.off()
 # U_ai, U_bi ~ N(mu=0, sigma^2 = 1)
 a <- matrix(rnorm(n_vote*n_sim),nrow=n_vote)
 b <- matrix(rnorm(n_vote*n_sim),nrow=n_vote)
-pdf("fig/s1b.pdf")
+pdf("fig/s1b.pdf",width=9,height=3)
 vote_plot(a,b,ylim=c(0,.3))
 dev.off()
 
@@ -60,7 +60,7 @@ dev.off()
 utils <- mvrnorm(n_vote*n_sim,mu=c(0,0),Sigma=matrix(c(1,.9,.9,1),nrow=2))
 a <- matrix(utils[,1],nrow=n_vote)
 b <- matrix(utils[,2],nrow=n_vote)
-pdf("fig/s2a.pdf")
+pdf("fig/s2a.pdf",width=9,height=3)
 vote_plot(a,b,ylim=c(0,1))
 dev.off()
 
@@ -69,7 +69,7 @@ dev.off()
 utils <- mvrnorm(n_vote*n_sim,mu=c(0,0),Sigma=matrix(c(1,-.9,-.9,1),nrow=2))
 a <- matrix(utils[,1],nrow=n_vote)
 b <- matrix(utils[,2],nrow=n_vote)
-pdf("fig/s2b.pdf")
+pdf("fig/s2b.pdf",width=9,height=3)
 vote_plot(a,b)
 dev.off()
 
@@ -78,7 +78,6 @@ dev.off()
 ### set new simulation parameters
 n_vote <- c(10,20,50,100,200,500,1000,2000,5000,10000)
 sd_diff <- c(0,0.005,0.01,0.025,0.05,0.1,0.25,0.5,0.75,1)
-n.sim <- 1000
 
 
 ### Scenario 3: Investigating inefficiencies for varying utility differences
@@ -89,9 +88,9 @@ b1 <- data.frame(Utility=rnorm(n_vote[length(n_vote)],0,1)
 	,Candidate="B",Scenario="Mean Difference = 0")
 diff1 <- data.frame(Utility=a1[,1] - b1[,1]
 	,Candidate="Difference",Scenario="Mean Difference = 0")
-a2 <- data.frame(Utility=rnorm(n_vote[length(n_vote)],-.5,1)
+a2 <- data.frame(Utility=rnorm(n_vote[length(n_vote)],0,1)
 	,Candidate="A",Scenario="Mean Difference = 1")
-b2 <- data.frame(Utility=rnorm(n_vote[length(n_vote)],.5,1)
+b2 <- data.frame(Utility=rnorm(n_vote[length(n_vote)],1,1)
 	,Candidate="B",Scenario="Mean Difference = 1")
 diff2 <- data.frame(Utility=a2[,1] - b2[,1]
 	,Candidate="Difference",Scenario="Mean Difference = 1")
@@ -209,20 +208,19 @@ ggsave(filename = "fig/s4b.pdf",
 
 ### set simulation parameters: 2000 voters in 1000 elections
 n_vote <- 2000
-n_sim <- 1000
 set.seed(10142014)
 
 ### Add X1: Investigating the effect of skewed distributions of ideal point
 
-ideal <- matrix(rsn(n_vote[length(n_vote)]*n.sim,0+xi
+ideal <- matrix(rsn(n_vote[length(n_vote)]*n_sim,0+xi
 	,omega=omega,alpha=alpha),nrow=n_vote[length(n_vote)])
-pos.a <- matrix(rep(rnorm(n.sim),n_vote[length(n_vote)])
+pos.a <- matrix(rep(rnorm(n_sim),n_vote[length(n_vote)])
 	,nrow=n_vote[length(n_vote)],byrow=T)
-pos.b <- matrix(rep(rnorm(n.sim),n_vote[length(n_vote)])
+pos.b <- matrix(rep(rnorm(n_sim),n_vote[length(n_vote)])
 	,nrow=n_vote[length(n_vote)],byrow=T)
 a <- -1*(ideal - pos.a)^2
 b <- -1*(ideal - pos.b)^2
-pdf("fig/sX1.pdf")
+pdf("fig/sX1.pdf",width=9,height=3)
 vote_plot(a,b,ylim=c(0,2),xlim=c(-3,3))
 dev.off()
 
@@ -233,7 +231,7 @@ pos_a <- matrix(rep(rnorm(n_sim),n_vote),nrow=n_vote,byrow=T)
 pos_b <- -1*pos_a
 a <- -1*(ideal - pos_a)^2
 b <- -1*(ideal - pos_b)^2
-pdf("fig/sX2.pdf")
+pdf("fig/sX2.pdf",width=9,height=3)
 vote_plot(a,b,ylim=c(0,.2),xlim=c(-5,5))
 dev.off()
 
