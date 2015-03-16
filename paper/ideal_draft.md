@@ -43,35 +43,35 @@ Formal models of voting behavior and political representation usually assume tha
 
 ## Comparing ideal points and independent normal utilities
 
-![Normally distributed ideal points.\label{fig:s1a}](../simulations/fig/s1a.pdf)
+![Normally distributed ideal points.\label{fig:s1a}](../simulations/fig/s1a.png)
 
-![Independent normal utilities.\label{fig:s1b}](../simulations/fig/s1b.pdf)
+![Independent normal utilities.\label{fig:s1b}](../simulations/fig/s1b.png)
 
 ## Investigating the effect of correlated utilities
 
-![Positively correlated normal utilities.\label{fig:s2a}](../simulations/fig/s2a.pdf)
+![Positively correlated normal utilities.\label{fig:s2a}](../simulations/fig/s2a.png)
 
-![Negatively correlated normal utilities.\label{fig:s2b}](../simulations/fig/s2b.pdf)
+![Negatively correlated normal utilities.\label{fig:s2b}](../simulations/fig/s2b.png)
 
 ## Inefficiencies for varying mean differences in utilities
 
-![Inefficiencies for varying mean differences in utilities I.\label{fig:s3a}](../simulations/fig/s3a.pdf)
+![Inefficiencies for varying mean differences in utilities I.\label{fig:s3a}](../simulations/fig/s3a.png)
 
-![Inefficiencies for varying mean differences in utilities II.\label{fig:s3b}](../simulations/fig/s3b.pdf)
+![Inefficiencies for varying mean differences in utilities II.\label{fig:s3b}](../simulations/fig/s3b.png)
 
 ## Investigating the effect of skewed utility distributions
 
-![Investigating the effect of skewed utility distributions I.\label{fig:s4a}](../simulations/fig/s4a.pdf)
+![Investigating the effect of skewed utility distributions I.\label{fig:s4a}](../simulations/fig/s4a.png)
 
-![Investigating the effect of skewed utility distributions II.\label{fig:s4a}](../simulations/fig/s4b.pdf)
+![Investigating the effect of skewed utility distributions II.\label{fig:s4a}](../simulations/fig/s4b.png)
 
 ## Inducing inefficiencies with ideal point utilities
 
-![Skewed ideal points.\label{fig:sX1}](../simulations/fig/sX1.pdf)
+![Skewed ideal points.\label{fig:sX1}](../simulations/fig/sX1.png)
 
-![Aggregate indifference between ideal points.\label{fig:s4a}](../simulations/fig/sX2.pdf)
+![Aggregate indifference between ideal points.\label{fig:s4a}](../simulations/fig/sX2.png)
 
-## Further Scenarios to look at
+## Further simulational scenarios
 
 # Possible Experimental Approaches
 

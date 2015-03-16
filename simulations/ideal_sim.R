@@ -40,7 +40,7 @@ pos_a <- matrix(rep(rnorm(n_sim),n_vote),nrow=n_vote,byrow=T)
 pos_b <- matrix(rep(rnorm(n_sim),n_vote),nrow=n_vote,byrow=T)
 a <- -1*(ideal - pos_a)^2
 b <- -1*(ideal - pos_b)^2
-pdf("fig/s1a.pdf",width=9,height=3)
+png("fig/s1a.png",width=9,height=3,units="in",res=300)
 vote_plot(a,b,ylim=c(0,0.8),xlim=c(-5,5))
 dev.off()
 
@@ -48,7 +48,7 @@ dev.off()
 # U_ai, U_bi ~ N(mu=0, sigma^2 = 1)
 a <- matrix(rnorm(n_vote*n_sim),nrow=n_vote)
 b <- matrix(rnorm(n_vote*n_sim),nrow=n_vote)
-pdf("fig/s1b.pdf",width=9,height=3)
+png("fig/s1b.png",width=9,height=3,units="in",res=300)
 vote_plot(a,b,ylim=c(0,.3))
 dev.off()
 
@@ -60,7 +60,7 @@ dev.off()
 utils <- mvrnorm(n_vote*n_sim,mu=c(0,0),Sigma=matrix(c(1,.9,.9,1),nrow=2))
 a <- matrix(utils[,1],nrow=n_vote)
 b <- matrix(utils[,2],nrow=n_vote)
-pdf("fig/s2a.pdf",width=9,height=3)
+png("fig/s2a.png",width=9,height=3,units="in",res=300)
 vote_plot(a,b,ylim=c(0,1))
 dev.off()
 
@@ -69,7 +69,7 @@ dev.off()
 utils <- mvrnorm(n_vote*n_sim,mu=c(0,0),Sigma=matrix(c(1,-.9,-.9,1),nrow=2))
 a <- matrix(utils[,1],nrow=n_vote)
 b <- matrix(utils[,2],nrow=n_vote)
-pdf("fig/s2b.pdf",width=9,height=3)
+png("fig/s2b.png",width=9,height=3,units="in",res=300)
 vote_plot(a,b)
 dev.off()
 
@@ -107,7 +107,7 @@ ggplot(dat, aes(x=Utility, linetype=Candidate)) +
   geom_vline(aes(xintercept=x), dat_mean, linetype=1) +
   geom_vline(aes(xintercept=x), dat_median, linetype=2) +
   facet_grid(Scenario ~ .) + theme_bw()
-ggsave(filename = "fig/s3a.pdf",
+ggsave(filename = "fig/s3a.png",
   path = NULL, scale = 1, width = 8, height = 4, units = c("in"))
 
 res <- matrix(NA,ncol=length(n_vote),nrow=length(sd_diff))
@@ -132,7 +132,7 @@ qplot(x=Var1, y=Var2, data=res_m, fill=value, geom="tile"
 	geom_text(aes(fill = res_m$value
 		, label = round(res_m$value, 2)), size=3) + theme_bw() +
 	theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1))
-ggsave(filename = "fig/s3b.pdf",
+ggsave(filename = "fig/s3b.png",
   path = NULL, scale = 1, width = 8, height = 4, units = c("in"))
 
 
@@ -176,7 +176,7 @@ ggplot(dat, aes(x=Utility, linetype=Candidate)) +
   geom_vline(aes(xintercept=x), dat_mean, linetype=1) +
   geom_vline(aes(xintercept=x), dat_median, linetype=2) +
   facet_grid(Scenario ~ .) + theme_bw()
-ggsave(filename = "fig/s4a.pdf",
+ggsave(filename = "fig/s4a.png",
   path = NULL, scale = 1, width = 8, height = 4, units = c("in"))
 
 res <- matrix(NA,ncol=length(n_vote),nrow=length(sd_diff))
@@ -193,7 +193,6 @@ for(n in 1:length(n_vote)){
 res_m <- melt(res)
 res_m[,1] <- as.factor(res_m[,1])
 res_m[,2] <- as.factor(res_m[,2])
-pdf("fig/s4b.pdf")
 qplot(x=Var1, y=Var2, data=res_m, fill=value, geom="tile"
 	,xlab="Mean Difference in Utility Distributions (+/-)"
 	, ylab="Number of Voters"
@@ -203,8 +202,7 @@ qplot(x=Var1, y=Var2, data=res_m, fill=value, geom="tile"
 	geom_text(aes(fill = res_m$value
 		, label = round(res_m$value, 2)), size=3) + theme_bw() +
 	theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1))
-dev.off()
-ggsave(filename = "fig/s4b.pdf",
+ggsave(filename = "fig/s4b.png",
   path = NULL, scale = 1, width = 8, height = 4, units = c("in"))
 
 
@@ -222,7 +220,7 @@ pos.b <- matrix(rep(rnorm(n_sim),n_vote[length(n_vote)])
 	,nrow=n_vote[length(n_vote)],byrow=T)
 a <- -1*(ideal - pos.a)^2
 b <- -1*(ideal - pos.b)^2
-pdf("fig/sX1.pdf",width=9,height=3)
+png("fig/sX1.png",width=9,height=3,units="in",res=300)
 vote_plot(a,b,ylim=c(0,2),xlim=c(-3,3))
 dev.off()
 
@@ -233,7 +231,7 @@ pos_a <- matrix(rep(rnorm(n_sim),n_vote),nrow=n_vote,byrow=T)
 pos_b <- -1*pos_a
 a <- -1*(ideal - pos_a)^2
 b <- -1*(ideal - pos_b)^2
-pdf("fig/sX2.pdf",width=9,height=3)
+png("fig/sX2.png",width=9,height=3,units="in",res=300)
 vote_plot(a,b,ylim=c(0,.2),xlim=c(-5,5))
 dev.off()
 
