@@ -11,7 +11,7 @@
 
 
 rm(list=ls())
-setwd("/data/Uni/projects/2014/ideal-point/draft/calc/")
+setwd("/data/Uni/projects/2014/ideal-point/simulations/")
 
 
 ### load required packages
@@ -99,13 +99,14 @@ dat_mean <- aggregate(dat$Utility[dat$Candidate=="Difference"]
 	, by=list(Scenario=dat$Scenario[dat$Candidate=="Difference"]),FUN=mean)
 dat_median <- aggregate(dat$Utility[dat$Candidate=="Difference"]
 	, by=list(Scenario=dat$Scenario[dat$Candidate=="Difference"]),FUN=median)
-ggplot(dat, aes(x=Utility, fill=Candidate)) +
+ggplot(dat, aes(x=Utility, linetype=Candidate)) +
   ggtitle("Example of Utility Distributions with Varying Mean Difference") +
   geom_density(alpha=.3) +
+  scale_linetype_manual(values = c("A"=2,"B"=3,"Difference"=1)) +
   scale_y_continuous(name="Density") +
-  geom_vline(aes(xintercept=x), dat_mean, color="blue",linetype=1) +
-  geom_vline(aes(xintercept=x), dat_median, color="darkblue",linetype=2) +
-  facet_grid(Scenario ~ .)
+  geom_vline(aes(xintercept=x), dat_mean, linetype=1) +
+  geom_vline(aes(xintercept=x), dat_median, linetype=2) +
+  facet_grid(Scenario ~ .) + theme_bw()
 ggsave(filename = "fig/s3a.pdf",
   path = NULL, scale = 1, width = 8, height = 4, units = c("in"))
 
@@ -126,10 +127,10 @@ qplot(x=Var1, y=Var2, data=res_m, fill=value, geom="tile"
 	, xlab="Mean Difference in Utility Distributions"
 	, ylab="Number of Voters"
 	, main="Efficiency of Majority Election Results") +
-	scale_fill_gradient2(limits=c(0,1)
+	scale_fill_gradient2(limits=c(0,1), low="white", high="grey40"
 		,name="Proportion of\nEfficient Elections") +
 	geom_text(aes(fill = res_m$value
-		, label = round(res_m$value, 2)), size=3) +
+		, label = round(res_m$value, 2)), size=3) + theme_bw() +
 	theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1))
 ggsave(filename = "fig/s3b.pdf",
   path = NULL, scale = 1, width = 8, height = 4, units = c("in"))
@@ -167,13 +168,14 @@ dat_mean <- aggregate(dat$Utility[dat$Candidate=="Difference"]
 	,by=list(Scenario=dat$Scenario[dat$Candidate=="Difference"]),FUN=mean)
 dat_median <- aggregate(dat$Utility[dat$Candidate=="Difference"]
 	,by=list(Scenario=dat$Scenario[dat$Candidate=="Difference"]),FUN=median)
-ggplot(dat, aes(x=Utility, fill=Candidate)) +
+ggplot(dat, aes(x=Utility, linetype=Candidate)) +
   ggtitle("Example of Utility Distributions with Varying Mean Difference") +
   geom_density(alpha=.3) +
+  scale_linetype_manual(values = c("A"=2,"B"=3,"Difference"=1)) +
   scale_y_continuous(name="Density") +
-  geom_vline(aes(xintercept=x), dat_mean, color="blue",linetype=1) +
-  geom_vline(aes(xintercept=x), dat_median, color="darkblue",linetype=2) +
-  facet_grid(Scenario ~ .)
+  geom_vline(aes(xintercept=x), dat_mean, linetype=1) +
+  geom_vline(aes(xintercept=x), dat_median, linetype=2) +
+  facet_grid(Scenario ~ .) + theme_bw()
 ggsave(filename = "fig/s4a.pdf",
   path = NULL, scale = 1, width = 8, height = 4, units = c("in"))
 
@@ -196,10 +198,10 @@ qplot(x=Var1, y=Var2, data=res_m, fill=value, geom="tile"
 	,xlab="Mean Difference in Utility Distributions (+/-)"
 	, ylab="Number of Voters"
 	, main="Efficiency of Majority Election Results") +
-	scale_fill_gradient2(limits=c(0,1)
+	scale_fill_gradient2(limits=c(0,1), low="white", high="grey40"
 		,name="Proportion of\nEfficient Elections") +
 	geom_text(aes(fill = res_m$value
-		, label = round(res_m$value, 2)), size=3) +
+		, label = round(res_m$value, 2)), size=3) + theme_bw() +
 	theme(axis.text.x = element_text(angle=90, vjust=.5, hjust=1))
 dev.off()
 ggsave(filename = "fig/s4b.pdf",
