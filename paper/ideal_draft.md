@@ -1,4 +1,4 @@
-% \hspace{1cm}Relaxing Assumptions about Voter Utilities:\newline\large{How the Nature of Political Preferences Shapes the Efficiency of Majority Rule Voting}
+% \hspace{1.5cm}Relaxing Assumptions about Voter Utilities:\newline\large{How the Nature of Political Preferences Shapes the Efficiency of Majority Rule Voting}[^note]
 % Peter DeScioli[^contact1]; Patrick Kraft[^contact2]
 % this draft: \today
 
@@ -10,10 +10,10 @@
 
 \begin{abstract}
 
-Traditional models of issue voting assume that voters and candidates can be placed on a single policy dimension and the voters' utilities can be determined by the relative proximity of their ideal points to the respective candidates [c.f. @downs1957economic]. In such a framework, simple majority elections between two candidates are generally expected to lead to desirable outcomes that maximize social welfare. The goal of this paper is to examine how the underlying assumption of voter utilities based on common policy dimensions affect the expected welfare outcomes of majority voting. More specifically, we present simulational studies in order to examine the efficiency of majority elections under different scenarios. We illustrate how the assumptions underlying the ideal-point framework influence the expected social welfare outcomes of voting rules.
+Spatial voting models typically assume that voters and candidates can be placed on a common policy dimension and the voters' utilities can be determined by the relative proximity of their ideal points to the respective candidates (c.f. Downs 1957). In such a framework, simple majority elections between two candidates are generally expected to lead to desirable outcomes that maximize social welfare. The goal of this paper is to examine how the underlying assumption of voter utilities based on common policy dimensions affect the expected welfare outcomes of majority voting. More specifically, we present simulational studies in order to examine the efficiency of majority elections under different scenarios. We illustrate how the assumptions underlying the ideal-point framework influence the expected social welfare outcomes of voting rules.
 
 \vspace{\baselineskip}
-\textbf{Keywords:} Utility Assumptions, Majority Voting, Efficiency
+\textbf{Keywords:} Spatial Voting, Utility Assumptions, Majority Voting, Efficiency
 
 \end{abstract}
 
@@ -21,11 +21,9 @@ Traditional models of issue voting assume that voters and candidates can be plac
 
 # Introduction
 
-A large body of research in political science and political sociology showed how a multitude of factors can affect voter preferences independent of pure issue positions and ideological dimensions. Such factors include, but are not limited to, the candidates’ traits and personalities, their perceived competence, and the nature of the campaign [see for example @hayes2005candidate]. For example, @todorov2005inferences showed that competence assessments solely based on candidate pictures successfully predicted the results in U.S. congressional elections [see also @mattes2010predicting]. Furthermore, the effect of candidate appearance on electoral success is not limited to the related inference about competence, but can be based on simple assessments of the beauty of candidates [@berggren2010looks]. These examples of non-issue based determinants of voter preferences indicate the underlying utilities for candidates or parties might not be reducible to a simple issue-based logic.
+Spatial theories of voting have a long tradition as a framework for the the study of individual political behavior in elections as well as the analyses of candidate strategies in campaigns. Pioneered in earlier work by @hotelling1929stability, @downs1957economic, and @black1958theory, many models of issue-based voting conceptualize political competition in a common multi- or unidimensional policy space in order to formalize voter preferences [for overviews, see @enelow1984spatial; @merrill1999unified]. Accordingly, spatial theories of voting assume that voter preferences can be described by (or approximated by) a common policy space or a single ideological dimension. Individual utilities (for example in the context of elections) are thereby formed based on the voters' ideal points in the policy space in relation to the candidates' respective positions.
 
-However, most formal models of social choice and assume that voter preferences can be described by (or approximated by) a single ideological dimension. Individual utilities (for example in the context of elections) are thereby formed based on the voters' ideal points in the policy space as well as the candidates' respective positions. More specifically, voter utilities are 
-
-% more to add here...
+However, a large body of research in political science and political psychology showed how a multitude of factors can affect voter preferences independent of pure issue positions and ideological dimensions. Such factors include, but are not limited to, the candidates’ traits and personalities, their perceived competence, and the nature of the campaign [see for example @hayes2005candidate]. For example, @todorov2005inferences showed that competence assessments solely based on candidate pictures successfully predicted the results in election results for the U.S. Congress [see also @mattes2010predicting]. Furthermore, the effect of candidate appearance on electoral success is not limited to the related inference about competence, but can be based on simple assessments of the beauty of candidates [@berggren2010looks]. These examples of non-issue based determinants of voter preferences indicate the underlying utilities for candidates or parties might not be reducible to a simple issue-based logic.
 
 In the paper presented here, it will be argued, that focusing solely on policy-based utilities induces strong assumptions about the relationships between the utilities for competing candidates. Our goal is to show how relaxing such assumptions can alter our conclusions about the efficiency of voting rules. As a first step, we will focus on a simple voting scenario of two competing candidates and varying sizes of the electorate. We present simulation studies in order to examine the efficiency of majority elections under different scenarios. Based on the simulation results, we propose an experimental design in order to provide further insights as to how the assumptions underlying the ideal-point framework influence the expected social welfare outcomes of voting rules.
 
