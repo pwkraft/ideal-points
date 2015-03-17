@@ -2,9 +2,9 @@
 % Peter DeScioli[^contact1]; Patrick Kraft[^contact2]
 % this draft: \today
 
-[^note]: Draft in preparation for the 2015 Annual Conference of the Midwest Political Science Association, comments welcome! Code and manuscript is available on GitHub: 
-[^contact1]: Peter DeScioli is an Assistant Professor in political science at Stony Brook University (pdescioli@gmail.com).
-[^contact2]: Patrick Kraft is a Ph.D. student in political science at Stony Brook University (patrick.kraft@stonybrook.edu).
+[^note]: Draft in preparation for the 2015 Annual Conference of the Midwest Political Science Association, comments welcome! The manuscript and simulation code are available on GitHub: <https://github.com/pwkraft/ideal-points>.
+[^contact1]: Peter DeScioli is an Assistant Professor in political science at Stony Brook University (<pdescioli@gmail.com>).
+[^contact2]: Patrick Kraft is a Ph.D. student in political science at Stony Brook University (<patrick.kraft@stonybrook.edu>).
 
 \doublespacing
 
@@ -37,136 +37,170 @@ Spatial theories of voting provide a comprehensive framework to translate issue 
 
 For example, Figure \ref{fig:ideal_plot} describes policy positions of five candidates ($A$ through $E$) as well as the ideal point of an individual voter ($X$). Using the health care example introduced above, the end points (-10 and 10) represent both extremes of complete privatization vs. government-run health care. Voter $X$ prefers some mixture between private and state controlled health care problems with a slight preference for private health care (-1). How can the utilities that voter $X$ could draw from each of the candidates be deduced in this framework?
 
-Most spatial voting models assume that utilities are based on the relative _proximity_ between the voter's ideal point and the respective candidate position. This conceptualization has been introduced by @downs1957economic and further developed in subsequent work [e.g. @hinich1981new; @enelow1984spatial]. Most proximity voting models are conceptualized as the Euclidian distance between the voter's ideal point and each of the candidates under consideration [c.f. @lewis1999no].[^euclidian] Assuming a unidimensional framework, the utility of candidate $i$ for each party $j$ can be described as follows:
+Most spatial voting models assume that utilities are based on the relative _proximity_ between the voter's ideal point and the respective candidate position. This conceptualization has been introduced by @downs1957economic and further developed in subsequent work [e.g. @hinich1981new; @enelow1984spatial]. Most proximity voting models are conceptualized as the Euclidian distance between the voter's ideal point and each of the candidates under consideration.[^euclidian] Assuming a unidimensional framework, the utility of candidate $i$ for each party $j$ can be described as follows [c.f. @lewis1999no]:
 
-\begin{equation}\label{eq:uclidian}
-	U_{i,j} = -(X_i - X_j)^2
+\begin{equation}\label{eq:euclidian}
+	U_{ij} = \alpha -\beta(X_i - X_j)^2
 \end{equation}
 
-[^euclidian]: Alternative conceptualizations include the absolute distance. However, we will focus on the Euclidian distance in the remainder of the paper since it represents the most common approach in proximity models.
+[^euclidian]: A major alternative conceptualizations proposes the use of absolute distances instead of squared distances. However, we will focus on the squared distance in the remainder of the paper since it represents the most common approach in proximity models.
 
-Where $U$ denotes the utility, $X_i$ denotes the voter's ideal point, and $X_j$ denotes candidate $j$'s position on the policy or ideological dimension.
+Where $U$ denotes the utility, $X_i$ denotes the voter's ideal point, and $X_j$ denotes candidate $j$'s position on the policy or ideological dimension. We include the unknown parameters $\alpha$ and $\beta>0$ to indicate the possibility of scaling of actual utilities. Without loss of generalizability, we will assume $\alpha = 0$ and $\beta=1$ in our subsequent simulations. According to this model, voter $X$ in Figure \ref{fig:ideal_plot} would maximize her utility if the policy proposed by candidate $C$ was implemented.
 
-
-However, other scholars proposed a directional conceptualization... but see westholm
-
-But it's hard to differentiate between the two (see lewis)
-
-other approaches combine different considerations (merrill)
-
-In the following, we will focus on the proximity conceptualization of spatial voting and political preferences.
+However, some scholars proposed alternative conceptualizations that map voter and candidate positions to individual utilities. The most prominent example is the _directional model_ proposed by @rabinowitz1989directional, which suggests that voter utilities increase the stronger a party emphasizes an issue on the same side of the neutral point (0 in Figure \ref{fig:ideal_plot}) as the voter. Accordingly, voter $X$ in Figure \ref{fig:ideal_plot} would be expected to prefer candidate $A$'s policy rather than candidate $C$'s policy (assuming that there is no `zone of acceptability' as sometimes proposed in the context of directional models). The ongoing debate whether the directional or proximity model is better suited to explain voter preferences and electoral behavior found proponents on both sides [@macdonald1991issues; @macdonald1995political; @westholm1997distance; @claassen2007ideology; @jessee2009spatial; @lacy2010testing]. Accordingly, some scholars proposed a unified framework combining both consideratione [e.g. @merrill1999unified, see also @kedar2005moderate; @claassen2009direction], while others argued that both theoretical approaches cannot be clearly distinguished and tested against each other due to the fact that they rely on fundamentally different assumptions [e.g. @lewis1999no]. Since it is out of the scope of this paper to discuss the theoretical or empirical merit of the proximity or the directional model, the following discussion as well as our simulational scenarios will focus solely on the proximity conceptualization of issue-based voter utilities.
  
 
 # Alternative Factors Influencing Political Preferences
 
-Start with campbell, american voter, party identification
+- Start with campbell/american voter, party identification
+- discuss recent studies showing non-issue influences on voting behavior etc...
 
 
 # Majority Voting and Social Welfare
 
-@hastie2005robust
+- discuss @hastie2005robust
+- discussion of majority voting as a voting rule that maximizes welfare in different experimental and simulational scenarios...
+- Conceptualization of efficiency:
+  - does the election result _maximize the aggregate utilities_ for all voters?
 
-majority voting seems to work quite well in experiments and simulations etc.
+\begin{equation}
+	\sum_i U_i^{W} \geq \sum_i U_i^{L}
+\end{equation}
 
 
 # Simulation Results
 
-In order to investigate how different assumptions about voter utilities affect our evaluations of the efficiency of voting models, we
+In order to investigate how different assumptions about voter utilities affect our evaluations of the efficiency of voting models, we propose the following simulational scenarios...
 
 Description of simulational scenarios:
+
 - number of _voters_ in each election: 2000
 - number of candidates: 2
 - number of simulations: 1000
 
-Conceptualization of efficiency:
-does the election result _maximize the aggregate utilities_ for all voters?
-$$ \sum_i U_i^{W} > \sum_i U_i^{L} $$
 
-
-
+\clearpage
 
 ## Comparing ideal points and independent normal utilities
 
+Utilities based on normally distributed ideal points:
 
-$$X_i,X_a,X_b \sim \mathcal{N}(\mu=0,\sigma^2=1)$$
-$$U^a_i = -(X_i - X_a)^2 \hspace{1cm} U^b_i = -(X_i - X_b)^2$$
+\begin{align}
+	X_i,X_j &\sim \mathcal{N}(\mu=0,\sigma^2=1) \\
+	U_{ij} &= -(X_i - X_j)^2
+\end{align}
 
 ![Normally distributed ideal points.\label{fig:s1a}](../simulations/fig/s1a.png)
 
 
-$$U^a_i,U^b_i \sim \mathcal{N}(\mu=0,\sigma^2=1)$$
+Utilities for both candidates based on independent normal distributions:
+
+\begin{equation}
+	U_{ij} \sim \mathcal{N}(\mu=0,\sigma^2=1)
+\end{equation}
 
 ![Independent normal utilities.\label{fig:s1b}](../simulations/fig/s1b.png)
 
+
+\clearpage
+
 ## Investigating the effect of correlated utilities
 
+Positively correlated normal utilities:
 
-$$U_a,U_b \sim \mathcal{N}\left(
-    \mathbf{\mu}=\begin{pmatrix}0 \\ 0\end{pmatrix},
-    \mathbf{\Sigma}=\begin{pmatrix}1 & 0.9 \\ 0.9 & 1\end{pmatrix}
-    \right)$$
+\begin{equation}
+	\mathbf{U}_{i} \sim \mathcal{N}\left(
+    \mathbf{\mu} =\begin{pmatrix}0 \\ 0\end{pmatrix},
+    \mathbf{\Sigma} =\begin{pmatrix}1 & 0.9 \\ 0.9 & 1\end{pmatrix}
+    \right)
+\end{equation}
 
 ![Positively correlated normal utilities.\label{fig:s2a}](../simulations/fig/s2a.png)
 
 
-$$ U_a, U_b \sim \mathcal{N}\left(
-    \mathbf{\mu}=\begin{pmatrix}0 \\ 0\end{pmatrix},
-    \mathbf{\Sigma}=\begin{pmatrix}1 & -0.9 \\ -0.9 & 1\end{pmatrix}
-    \right)$$
+Negatively correlated normal utilities:
+
+\begin{equation}
+	\mathbf{U}_{i} \sim \mathcal{N}\left(
+    \mathbf{\mu} =\begin{pmatrix}0 \\ 0\end{pmatrix},
+    \mathbf{\Sigma} =\begin{pmatrix}1 & -0.9 \\ -0.9 & 1\end{pmatrix}
+    \right)
+\end{equation}
 
 ![Negatively correlated normal utilities.\label{fig:s2b}](../simulations/fig/s2b.png)
 
+
+\clearpage
+
 ## Inefficiencies for varying mean differences in utilities
 
- $$U^a_i \sim \mathcal{N}(\mu=0,\sigma^2=1) \hspace{1cm}
-  U^b_i \sim \mathcal{N}(\mu=0+\epsilon,\sigma^2=1)$$
+\begin{equation}
+	\mathbf{U}_{i} \sim \mathcal{N}\left(
+    \mathbf{\mu} = \begin{pmatrix}0 \\ 0+\epsilon \end{pmatrix},
+    \mathbf{\Sigma} =\begin{pmatrix}1 & 0 \\ 0 & 1\end{pmatrix}
+    \right)
+\end{equation}
 
 ![Inefficiencies for varying mean differences in utilities I.\label{fig:s3a}](../simulations/fig/s3a.png)
 
- $$U^a_i \sim \mathcal{N}(\mu=0,\sigma^2=1) \hspace{1cm}
-  U^b_i \sim \mathcal{N}(\mu=0+\epsilon,\sigma^2=1)$$
-
 ![Inefficiencies for varying mean differences in utilities II.\label{fig:s3b}](../simulations/fig/s3b.png)
+
+
+\clearpage
 
 ## Investigating the effect of skewed utility distributions
 
-  $$U^a_i \sim \mathcal{N}(\mu=0+\epsilon,\sigma^2=1) \hspace{1cm}
-  U^b_i \sim \mathcal{N}_\text{skew}(\mu=0-\epsilon,\sigma^2=1)$$
+\begin{align}
+	U_{i,j=0} &\sim \mathcal{N}(\mu=0+\epsilon,\sigma^2=1) \\
+	U_{i,j=1} &\sim \mathcal{N}^\text{skew}(\mu=0-\epsilon,\sigma^2=1)
+\end{align}
 
 ![Investigating the effect of skewed utility distributions I.\label{fig:s4a}](../simulations/fig/s4a.png)
 
- $$U^a_i \sim \mathcal{N}(\mu=0+\epsilon,\sigma^2=1) \hspace{1cm}
-  U^b_i \sim \mathcal{N}_\text{skew}(\mu=0-\epsilon,\sigma^2=1)$$
-
 ![Investigating the effect of skewed utility distributions II.\label{fig:s4a}](../simulations/fig/s4b.png)
+
+
+\clearpage
 
 ## Inducing inefficiencies with ideal point utilities
 
- $$X_i \sim \mathcal{N}_\text{skew}(\mu=0,\sigma^2=1) \hspace{1cm} X_a,X_b \sim \mathcal{N}(\mu=0,\sigma^2=1)$$
-  $$U^a_i = -(X_i - X_a)^2 \hspace{1cm} U^b_i = -(X_i - X_b)^2$$
+Aggregate differences between ideal points:
+
+\begin{align}
+	X_i,X_{j=0} &\sim \mathcal{N}(\mu=0,\sigma^2=1) \\
+	X_{j=1} &= -1*X_{j=0} \\
+	U^{ij} &= -(X_i - X_j)^2
+\end{align}
+
+![Aggregate indifference between ideal points.\label{fig:s4a}](../simulations/fig/sX2.png)
+
+\clearpage
+
+Skewed ideal points:
+
+\begin{align}
+	X_i &\sim \mathcal{N}^\text{skew}(\mu=0,\sigma^2=1) \\
+	X_j &\sim \mathcal{N}(\mu=0,\sigma^2=1) \\
+	U^{ij} &= -(X_i - X_j)^2
+\end{align}
 
 ![Skewed ideal points.\label{fig:sX1}](../simulations/fig/sX1.png)
 
 
- $$X_i,X_a \sim \mathcal{N}(\mu=0,\sigma^2=1) \hspace{1.4cm} X_b = -1*X_a $$
-  $$U^a_i = -(X_i - X_a)^2 \hspace{2cm} U^b_i = -(X_i - X_b)^2$$
 
-![Aggregate indifference between ideal points.\label{fig:s4a}](../simulations/fig/sX2.png)
+\clearpage
 
 ## Further simulational scenarios
 
 # Possible Experimental Designs and Further Developments
 
+- discuss @oprea2007compensation
+- comparing auction mechanism to voting
+- uncertainty about issue positions
 - Performance of _compensation elections / bidding mechanisms_ in the context of binary choices @oprea2007compensation
 - Effect of (endogenous) electoral _abstention_  on election efficiency
 - Multi-candidate elections
 
-
-@oprea2007compensation
-
-comparing auction mechanism to voting
-
-uncertainty about issue positions
 
 # Conclusion
 
