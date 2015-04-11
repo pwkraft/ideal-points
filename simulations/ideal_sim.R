@@ -19,6 +19,7 @@ library(MASS)
 library(ggplot2)
 library(reshape2)
 library(sn)
+library(moments)
 
 ### load required functions
 source("func/vote_func.R")
@@ -43,6 +44,10 @@ b <- -1*(ideal - pos_b)^2
 png("fig/s1a.png",width=9,height=3,units="in",res=300)
 vote_plot(a,b,ylim=c(0,0.8),xlim=c(-5,5))
 dev.off()
+# calculate standard deviation of means and medians in utility differentials
+sd(apply(a-b,2,mean))
+sd(apply(a-b,2,median))
+
 
 ## b) independent normal utilities for two alternatives
 # U_ai, U_bi ~ N(mu=0, sigma^2 = 1)
@@ -51,6 +56,9 @@ b <- matrix(rnorm(n_vote*n_sim),nrow=n_vote)
 png("fig/s1b.png",width=9,height=3,units="in",res=300)
 vote_plot(a,b,ylim=c(0,.3))
 dev.off()
+# calculate standard deviation of means and medians in utility differentials
+sd(apply(a-b,2,mean))
+sd(apply(a-b,2,median))
 
 
 ### Scenario 2: Investigating the effect correlated utilities
@@ -63,6 +71,9 @@ b <- matrix(utils[,2],nrow=n_vote)
 png("fig/s2a.png",width=9,height=3,units="in",res=300)
 vote_plot(a,b,ylim=c(0,1))
 dev.off()
+# calculate standard deviation of means and medians in utility differentials
+sd(apply(a-b,2,mean))
+sd(apply(a-b,2,median))
 
 ## b) independent normal utilities for two alternatives
 # U_ai, U_bi ~ N(mu=0, sigma^2 = 1), sigma=-.9
@@ -72,7 +83,9 @@ b <- matrix(utils[,2],nrow=n_vote)
 png("fig/s2b.png",width=9,height=3,units="in",res=300)
 vote_plot(a,b)
 dev.off()
-
+# calculate standard deviation of means and medians in utility differentials
+sd(apply(a-b,2,mean))
+sd(apply(a-b,2,median))
 
 
 ### set new simulation parameters
@@ -83,23 +96,23 @@ sd_diff <- c(0,0.005,0.01,0.025,0.05,0.1,0.25,0.5,0.75,1)
 ### Scenario 3: Investigating inefficiencies for varying utility differences
 
 a1 <- data.frame(Utility=rnorm(n_vote[length(n_vote)],0,1)
-	,Candidate="A",Scenario="Mean Difference = 0")
+	,Policy="A",Scenario="Mean Difference = 0")
 b1 <- data.frame(Utility=rnorm(n_vote[length(n_vote)],0,1)
-	,Candidate="B",Scenario="Mean Difference = 0")
+	,Policy="B",Scenario="Mean Difference = 0")
 diff1 <- data.frame(Utility=a1[,1] - b1[,1]
-	,Candidate="Difference",Scenario="Mean Difference = 0")
+	,Policy="Difference",Scenario="Mean Difference = 0")
 a2 <- data.frame(Utility=rnorm(n_vote[length(n_vote)],0,1)
-	,Candidate="A",Scenario="Mean Difference = 1")
+	,Policy="A",Scenario="Mean Difference = 1")
 b2 <- data.frame(Utility=rnorm(n_vote[length(n_vote)],1,1)
-	,Candidate="B",Scenario="Mean Difference = 1")
+	,Policy="B",Scenario="Mean Difference = 1")
 diff2 <- data.frame(Utility=a2[,1] - b2[,1]
-	,Candidate="Difference",Scenario="Mean Difference = 1")
+	,Policy="Difference",Scenario="Mean Difference = 1")
 dat <- data.frame(rbind(a1,b1,diff1,a2,b2,diff2))
-dat_mean <- aggregate(dat$Utility[dat$Candidate=="Difference"]
-	, by=list(Scenario=dat$Scenario[dat$Candidate=="Difference"]),FUN=mean)
-dat_median <- aggregate(dat$Utility[dat$Candidate=="Difference"]
-	, by=list(Scenario=dat$Scenario[dat$Candidate=="Difference"]),FUN=median)
-ggplot(dat, aes(x=Utility, linetype=Candidate)) +
+dat_mean <- aggregate(dat$Utility[dat$Policy=="Difference"]
+	, by=list(Scenario=dat$Scenario[dat$Policy=="Difference"]),FUN=mean)
+dat_median <- aggregate(dat$Utility[dat$Policy=="Difference"]
+	, by=list(Scenario=dat$Scenario[dat$Policy=="Difference"]),FUN=median)
+ggplot(dat, aes(x=Utility, linetype=Policy)) +
   ggtitle("Example of Utility Distributions with Varying Mean Difference") +
   geom_density(alpha=.3) +
   scale_linetype_manual(values = c("A"=2,"B"=3,"Difference"=1)) +
@@ -145,31 +158,31 @@ omega <- sqrt(pi/(pi-2*(alpha/sqrt(1+alpha^2))^2))
 xi <- (-1)*omega*alpha/sqrt(1+alpha^2)*sqrt(2/pi)
 
 a1 <- data.frame(Utility=rnorm(n_vote[length(n_vote)],-1,1)
-	,Candidate="A",Scenario="Epsilon = -1")
+	,Policy="A",Scenario="Epsilon = -1")
 b1 <- data.frame(Utility=rsn(n_vote[length(n_vote)]
-	,xi=1+xi,omega=omega,alpha=alpha),Candidate="B",Scenario="Epsilon = -1")
+	,xi=1+xi,omega=omega,alpha=alpha),Policy="B",Scenario="Epsilon = -1")
 diff1 <- data.frame(Utility=a1[,1] - b1[,1]
-	,Candidate="Difference",Scenario="Epsilon = -1")
+	,Policy="Difference",Scenario="Epsilon = -1")
 a2 <- data.frame(Utility=rnorm(n_vote[length(n_vote)],0,1)
-	,Candidate="A",Scenario="Epsilon = 0")
+	,Policy="A",Scenario="Epsilon = 0")
 b2 <- data.frame(Utility=rsn(n_vote[length(n_vote)]
 	,xi=0+xi,omega=omega,alpha=alpha)
-	,Candidate="B",Scenario="Epsilon = 0")
+	,Policy="B",Scenario="Epsilon = 0")
 diff2 <- data.frame(Utility=a2[,1] - b2[,1]
-	,Candidate="Difference",Scenario="Epsilon = 0")
+	,Policy="Difference",Scenario="Epsilon = 0")
 a3 <- data.frame(Utility=rnorm(n_vote[length(n_vote)],1,1)
-	,Candidate="A",Scenario="Epsilon = 1")
+	,Policy="A",Scenario="Epsilon = 1")
 b3 <- data.frame(Utility=rsn(n_vote[length(n_vote)]
-	,xi=-1+xi,omega=omega,alpha=alpha),Candidate="B",Scenario="Epsilon = 1")
+	,xi=-1+xi,omega=omega,alpha=alpha),Policy="B",Scenario="Epsilon = 1")
 diff3 <- data.frame(Utility=a3[,1] - b3[,1]
-	,Candidate="Difference",Scenario="Epsilon = 1")
+	,Policy="Difference",Scenario="Epsilon = 1")
 dat <- data.frame(rbind(a1,b1,diff1,a2,b2,diff2,a3,b3,diff3))
-dat_mean <- aggregate(dat$Utility[dat$Candidate=="Difference"]
-	,by=list(Scenario=dat$Scenario[dat$Candidate=="Difference"]),FUN=mean)
-dat_median <- aggregate(dat$Utility[dat$Candidate=="Difference"]
-	,by=list(Scenario=dat$Scenario[dat$Candidate=="Difference"]),FUN=median)
-ggplot(dat, aes(x=Utility, linetype=Candidate)) +
-  ggtitle("Example of Utility Distributions with Varying Mean Difference") +
+dat_mean <- aggregate(dat$Utility[dat$Policy=="Difference"]
+	,by=list(Scenario=dat$Scenario[dat$Policy=="Difference"]),FUN=mean)
+dat_median <- aggregate(dat$Utility[dat$Policy=="Difference"]
+	,by=list(Scenario=dat$Scenario[dat$Policy=="Difference"]),FUN=median)
+ggplot(dat, aes(x=Utility, linetype=Policy)) +
+  ggtitle("Example of Skewed Utility Distributions with Varying Mean Difference") +
   geom_density(alpha=.3) +
   scale_linetype_manual(values = c("A"=2,"B"=3,"Difference"=1)) +
   scale_y_continuous(name="Density") +
@@ -179,6 +192,19 @@ ggplot(dat, aes(x=Utility, linetype=Candidate)) +
 ggsave(filename = "fig/s4a.png",
   path = NULL, scale = 1, width = 8, height = 4, units = c("in"))
 
+# skewness for scenarios (empirically)
+skewness(a1[,1])
+skewness(b1[,1])
+skewness(a2[,1])
+skewness(b2[,1])
+skewness(a3[,1])
+skewness(b3[,1])
+
+# skewness for scenarios (analytically)
+delta <- alpha/sqrt(1+alpha^2)
+(4-pi)/2*(delta*sqrt(2/pi))^3/(1-2*delta^2/pi)^(3/2)
+
+# run simulations
 res <- matrix(NA,ncol=length(n_vote),nrow=length(sd_diff))
 colnames(res) <- n_vote
 rownames(res) <- sd_diff
@@ -194,7 +220,7 @@ res_m <- melt(res)
 res_m[,1] <- as.factor(res_m[,1])
 res_m[,2] <- as.factor(res_m[,2])
 qplot(x=Var1, y=Var2, data=res_m, fill=value, geom="tile"
-	,xlab="Mean Difference in Utility Distributions (+/-)"
+	,xlab="Mean Difference in Skewed Utility Distributions (+/-)"
 	, ylab="Number of Voters"
 	, main="Efficiency of Majority Election Results") +
 	scale_fill_gradient2(limits=c(0,1), low="white", high="grey40"
@@ -234,6 +260,11 @@ b <- -1*(ideal - pos_b)^2
 png("fig/sX2.png",width=9,height=3,units="in",res=300)
 vote_plot(a,b,ylim=c(0,.2),xlim=c(-5,5))
 dev.off()
+# calculate standard deviation of means and medians in utility differentials
+sd(apply(a-b,2,mean))
+sd(apply(a-b,2,median))
+
+
 
 # if the electorate is on average indifferent between both ideal points,
 # then we get the same results for voting efficiencies

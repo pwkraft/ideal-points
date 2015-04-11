@@ -52,6 +52,8 @@ However, some scholars proposed alternative conceptualizations that map voter an
 
 # Alternative Factors Influencing Political Preferences
 
+Traditional models of voting behavior initially focused on 
+
 - Start with campbell/american voter, party identification
 - discuss recent studies showing non-issue influences on voting behavior etc...
 
